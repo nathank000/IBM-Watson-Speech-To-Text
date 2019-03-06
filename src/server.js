@@ -1,4 +1,5 @@
 'use strict';
+require('dotenv').config();
 const config = require('../config');
 const express = require('express');
 const app = express();
@@ -34,35 +35,27 @@ app.use(cors());
 // token endpoints
 // **Warning**: these endpoints should probably be guarded with additional authentication & authorization for production use
 
-// speech to text token endpoint
-var sttAuthService = new watson.AuthorizationV1(
-  Object.assign(
-    {
 
-    username: config.USER_NAME,
-    password: config.PASSWORD
-    },
-    vcapServices.getCredentials('speech_to_text') // pulls credentials from environment in bluemix, otherwise returns {}
-  )
-);
+
+
+
+
+
 app.use('/api/speech-to-text/token', function(req, res) {
-  sttAuthService.getToken(
-    {
-      url: watson.SpeechToTextV1.URL
-    },
-    function(err, token) {
-      if (err) {
-        console.log('Error retrieving token: ', err);
-        res.status(500).send('Error retrieving token');
-        return;
-      }
 
-      console.log('token from server.js is ', token);
+  // to get an IAM Access Token
+  var authorization = new watson.AuthorizationV1({
+    iam_apikey: process.env.IMAPIKEY
+  });
 
-
+  authorization.getToken(function (err, token) {
+    if (!token) {
+      console.log('error:', err);
+    } else {
+      console.log('responding for the request for a token with WATSON AUTHORIZATION');
       res.send(token);
     }
-  );
+  });
 });
 
 
