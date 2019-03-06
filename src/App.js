@@ -9,17 +9,19 @@ class App extends Component {
     super();
     this.state = {
       searchText: 'this is a test',
-      text: ''
+      text: '',
+      stream: null
     };
+
   }
 
   onStopClick() {
-    // stream.stop.bind(stream);
-    // this.setState({
-    //   text: ''
-    // });
+    this.state.stream.stop()//stream.stop.bind(stream);
+    this.setState({
+      text: ''
+    });
 
-    // alert('RESET');
+    alert('RESET');
   }
 
   onClickButton(){
@@ -63,7 +65,12 @@ class App extends Component {
       stream.on('error', function(err) {
           console.log(err);
       });
-      document.querySelector('#stop').onclick = stream.stop.bind(stream);
+
+      this.setState({
+        stream: stream
+      })
+
+      //document.querySelector('#stop').onclick = stream.stop.bind(stream);
     }).catch(function(error) {
         console.log(error);
     });
@@ -76,7 +83,7 @@ class App extends Component {
             <h1 className="App-title">Welcome to React</h1>
           </header>
           <button id="button" onClick={this.onClickButton.bind(this)}>Listen To Microphone</button> 
-          <button id="stop" >STOP</button> 
+          <button id="stop" onClick={this.onStopClick.bind(this)}>STOP</button> 
           <div>{this.state.searchText}</div>
         <div className="App-Text">{this.state.text}</div> 
         <div>hot reload is working</div>
